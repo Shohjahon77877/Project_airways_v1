@@ -1,0 +1,17 @@
+{
+  "name": "flight_service-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["flight_service"],
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
+      "options": {
+        "jestConfig": "apps/flight_service-e2e/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "dependsOn": ["flight_service:build", "flight_service:serve"]
+    }
+  }
+}

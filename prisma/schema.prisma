@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Extra_Detail {
+  EXIT_ROW
+  WINDOW_SEAT
+}
+
+enum Ticket_status {
+  PURCHASED
+  CANCELED
+}
+
+enum Loyalt_Program_Rank {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum Flight_Status {
+  SCHEDULED
+  BOARDING
+  IN_AIR
+  DELAYED
+  CANCELLED
+  LANDED
+}
+
+model Admin {
+  id             Int      @id @default(autoincrement())
+  first_name     String
+  last_name      String
+  email          String   @unique
+  password       String
+  is_super_admin Boolean?
+  created_by     Int?
+  last_login     DateTime @default(now())
+
+  News News[]
+}
+
+model News {
+  id                    Int      @id @default(autoincrement())
+  title                 String
+  content               String
+  published_by_admin_id Int
+  published_by_admin    Admin    @relation(fields: [published_by_admin_id], references: [id])
+  published_at          DateTime @default(now())
+}
+
+model Classes {
+  id         Int     @id @default(autoincrement())
+  class_name String
+  base_price Decimal @db.Decimal(10, 2)
+
+  Seats Seats[]
+}
+
+model Seats {
+  id           Int     @id @default(autoincrement())
+  plane_id     Int
+  Plane        Planes  @relation(fields: [plane_id], references: [id])
+  seat_number  Int
+  class_id     Int
+  Class        Classes @relation(fields: [class_id], references: [id])
+  is_available Boolean
+
+  extra_detail Extra_Detail?
+  extra_fee    Decimal?      @db.Decimal(10, 2)
+
+  Ticket Ticket[]
+}
+
+model Ticket {
+  id            Int           @id @default(autoincrement())
+  user_id       Int
+  user          Users         @relation(fields: [user_id], references: [id])
+  flight_id     Int
+  flight        Flights       @relation(fields: [flight_id], references: [id])
+  seat_id       Int
+  seat          Seats         @relation(fields: [seat_id], references: [id])
+  is_round_trip Boolean
+  purchase_date DateTime      @default(now())
+  price         Decimal
+  ticket_status Ticket_status
+
+  @@unique([flight_id, seat_id])
+}
+
+model LoyaltyProgram {
+  id      Int                 @id @default(autoincrement())
+  user_id Int
+  user    Users               @relation(fields: [user_id], references: [id])
+  points  Int
+  level   Loyalt_Program_Rank
+}
+
+model Reviews {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  user       Users    @relation(fields: [user_id], references: [id])
+  flight_id  Int
+  flight     Flights  @relation(fields: [flight_id], references: [id])
+  rating     Int
+  comment    String
+  created_at DateTime @default(now())
+}
+
+model Users {
+  id            Int      @id @default(autoincrement())
+  first_name    String
+  last_name     String
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+
+  Reviews        Reviews[]
+  Ticket         Ticket[]
+  LoyaltyProgram LoyaltyProgram[]
+}
+
+model Company {
+  id     Int      @id @default(autoincrement())
+  name   String
+  Planes Planes[]
+}
+
+model Planes {
+  id          Int     @id @default(autoincrement())
+  model_name  String
+  company_id  Int
+  company     Company @relation(fields: [company_id], references: [id])
+  total_seats Int
+
+  Seats   Seats[]
+  Flights Flights[]
+}
+
+model Airports {
+  id      Int    @id @default(autoincrement())
+  name    String
+  code    String @unique
+  city_id Int
+  City    City   @relation(fields: [city_id], references: [id])
+
+  departures Flights[] @relation("DepartureAirport")
+  arrivals   Flights[] @relation("ArrivalAirport")
+}
+
+model Flights {
+  id                   Int           @id @default(autoincrement())
+  flight_number        Int
+  plane_id             Int
+  arrival_airport_id   Int
+  departure_airport_id Int
+  departure_time       DateTime
+  arrival_time         DateTime
+  status               Flight_Status
+
+  Plane     Planes   @relation(fields: [plane_id], references: [id])
+  departure Airports @relation("DepartureAirport", fields: [departure_airport_id], references: [id])
+  arrival   Airports @relation("ArrivalAirport", fields: [arrival_airport_id], references: [id])
+
+  Ticket  Ticket[]
+  Reviews Reviews[]
+
+  @@index([plane_id])
+  @@index([arrival_airport_id])
+  @@index([departure_airport_id])
+}
+
+model City {
+  id         Int     @id @default(autoincrement())
+  name       String
+  country_id Int
+  country    Country @relation(fields: [country_id], references: [id])
+
+  Airports Airports[]
+}
+
+model Country {
+  id   Int    @id @default(autoincrement())
+  name String
+  City City[]
+}

@@ -13,6 +13,8 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      forbidUnknownValues: true,
+      validationError: { target: false, value: false },
       exceptionFactory: (errors) => {
         return errors.map((err) => {
           return {
@@ -22,6 +24,7 @@ async function bootstrap() {
         });
       },
     }),
+    
   );
 
   // app.useGlobalFilters(new GatewayExceptionFilter(), new RpcExceptionFilter);

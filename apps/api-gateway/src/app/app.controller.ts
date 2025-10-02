@@ -107,7 +107,7 @@ export class AppController {
   // ====================================================
 
   @Post('user')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard, RoleGuard)
   createUser(@Body() user: CreateUserDto) {
     return this.appService.createUser(user);
   }
@@ -119,6 +119,7 @@ export class AppController {
   }
 
   @Get('user/:id')
+  @UseGuards(AuthGuard)
   getUserById(@Param('id') id: string) {
     return this.appService.getUserById(+id);
   }
@@ -232,17 +233,18 @@ export class AppController {
   }
 
   @Get('loyalty/:id')
-  getLoyaltyMemberById(@Param('memberId') id: string) {
+  getLoyaltyMemberById(@Param('id') id: string) {
     return this.appService.getMemberById(+id);
   }
 
   @Post('loyalty')
   createLoyaltyMember(@Body() data: CreateLoyaltyProgramDto) {
+    console.log(data)
     return this.appService.enrollMember(data);
   }
 
   @Patch('loyalty/:id')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   updateMemberPoints(
     @Param('id') id: string,
     @Body() data: UpdateLoyaltyProgramDto,
@@ -251,7 +253,7 @@ export class AppController {
   }
 
   @Delete('loyalty/:id')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   deleteLoyaltyMember(@Param('id') id: string) {
     return this.appService.deleteMember(+id);
   }

@@ -14,12 +14,12 @@ export class FlightController {
 
   @MessagePattern({ cmd: 'get_flights' })
   getFLights() {
-    return this.flightService.getFlights();
+    return this.flightService.findFlights();
   }
 
   @MessagePattern({ cmd: 'get_flight_by_id' })
   getAdminById(@Payload() id: number) {
-    return this.flightService.getFlightById(id);
+    return this.flightService.findFlightById(id);
   }
 
   @MessagePattern({ cmd: 'update_flight' })

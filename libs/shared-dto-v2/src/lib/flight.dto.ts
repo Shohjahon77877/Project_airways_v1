@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Flight_Status } from '../../../../generated/prisma';
 import { PartialType } from '@nestjs/mapped-types';
 
@@ -18,22 +19,24 @@ export class CreateFlightDto {
   @IsInt()
   @IsNotEmpty()
   plane_id!: number;
+  
+  @IsInt()
+  @IsNotEmpty()
+  arrival_airport_id!: number;
 
   @IsInt()
   @IsNotEmpty()
   departure_airport_id!: number;
 
-  @IsInt()
+  @IsDate()
+  @Type(() => Date)
   @IsNotEmpty()
-  arrival_airport_id!: number;
+  departure_time!: Date;
 
   @IsDate()
+  @Type(() => Date)
   @IsNotEmpty()
-  departure_time!: number;
-
-  @IsDate()
-  @IsNotEmpty()
-  arrival_time!: number;
+  arrival_time!: Date;
 
   @IsEnum(Flight_Status)
   @IsOptional()

@@ -4,6 +4,7 @@ import {
   CreateLoyaltyProgramDto,
   UpdateLoyaltyProgramDto,
 } from '@my-airways/shared-dto-v2';
+import { errorResponse } from '@my-airways/shared-utils';
 
 @Injectable()
 export class AppService {
@@ -12,14 +13,15 @@ export class AppService {
   async createLoyaltyMember(data: CreateLoyaltyProgramDto) {
     const { user_id } = data;
     const user = await this.prisma.users.findUnique({ where: { id: user_id } });
+    console.log(data);
     if (!user) {
-      throw new NotFoundException(`User with ID ${user_id} not found`);
+      return errorResponse(404, 'User not found');
     }
-    return this.prisma.loyaltyProgram.create({ data });
+    return await this.prisma.loyaltyProgram.create({ data });
   }
 
   async getLoyaltyMembers() {
-    return this.prisma.loyaltyProgram.findMany({ include: { user: true } });
+    return await this.prisma.loyaltyProgram.findMany({ include: { user: true } });
   }
 
   async getLoyaltyMemberById(id: number) {
@@ -28,7 +30,7 @@ export class AppService {
       include: { user: true },
     });
     if (!member) {
-      throw new NotFoundException(`Loyalty member with ID ${id} not found`);
+      return errorResponse(404, 'Member not found');
     }
     return member;
   }
@@ -38,16 +40,16 @@ export class AppService {
       where: { id },
     });
     if (!member) {
-      throw new NotFoundException(`Loyalty member with ID ${id} not found`);
+      return errorResponse(404, 'Member not found');
     }
 
     const { user_id } = member;
     const user = await this.prisma.users.findUnique({ where: { id: user_id } });
     if (!user) {
-      throw new NotFoundException(`User with ID ${user_id} not found`);
+      return errorResponse(404, 'User not found');
     }
 
-    return this.prisma.loyaltyProgram.update({ where: { id }, data });
+    return await this.prisma.loyaltyProgram.update({ where: { id }, data });
   }
 
   async deleteLoyaltyMember(id: number) {
@@ -55,9 +57,9 @@ export class AppService {
       where: { id },
     });
     if (!member) {
-      throw new NotFoundException(`Loyalty member with ID ${id} not found`);
+      return errorResponse(404, 'Member not found');
     }
 
-    return this.prisma.loyaltyProgram.delete({ where: { id } });
+    return await this.prisma.loyaltyProgram.delete({ where: { id } });
   }
 }

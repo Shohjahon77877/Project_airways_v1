@@ -307,9 +307,19 @@ export class AppService {
 
   @RmqErrorHandler()
   async enrollMember(data: CreateLoyaltyProgramDto) {
-    return await firstValueFrom(
-      this.loyaltyRMQClient.send({ cmd: 'create_loyalty_member' }, data),
+    console.log("This part is running")
+    // return await firstValueFrom(
+    //   this.loyaltyRMQClient.send({ cmd: 'create_loyalty_member' }, data),
+    // );
+    try {
+    const res = firstValueFrom(
+      this.loyaltyRMQClient.send({ cmd: 'create_loyalty_member' }, data)
     );
+    return res;
+  } catch (err) {
+    console.error('❌ Error while sending RMQ message:', err);
+    throw new HttpException('Failed to enroll member.', HttpStatus.BAD_GATEWAY);
+  }
   }
 
   @RmqErrorHandler()

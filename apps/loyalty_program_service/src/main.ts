@@ -18,6 +18,7 @@ async function bootstrap() {
     },
   );
 
+  await app.listen()
   Logger.log(
     `🚀 Loyalty program service is listening to RMQ... `,
   );

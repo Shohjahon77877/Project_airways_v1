@@ -3,9 +3,7 @@ import { AppService } from './app.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   CreateLoyaltyProgramDto,
-  CreateTicketDto,
   UpdateLoyaltyProgramDto,
-  UpdateTicketDto,
 } from '@my-airways/shared-dto-v2';
 
 @Controller()
@@ -13,8 +11,9 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @MessagePattern({ cmd: 'create_loyalty_member' })
-  createLoyaltyMember(@Payload() loyaltyMember: CreateLoyaltyProgramDto) {
-    return this.appService.createLoyaltyMember(loyaltyMember);
+  createLoyaltyMember(@Payload() data: CreateLoyaltyProgramDto) {
+    console.log(data)
+    return this.appService.createLoyaltyMember(data);
   }
 
   @MessagePattern({ cmd: 'get_loyalty_members' })

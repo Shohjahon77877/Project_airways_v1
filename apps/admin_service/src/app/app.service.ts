@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@my-airways/shared-services-v2';
 import { CreateAdminDto, UpdateAdminDto } from '@my-airways/shared-dto-v2';
 import { PasswordUtil } from '@my-airways/shared-utils';
+import { JsonSocket, RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AppService {
@@ -10,8 +11,10 @@ export class AppService {
   async createAdmin(data: CreateAdminDto) {
     try {
       const { password } = data;
+      
       const hashedPassword = await PasswordUtil.hashPassword(password);
 
+      console.log(data)
       return await this.prisma.admin.create({
         data: {
           ...data,
@@ -19,7 +22,9 @@ export class AppService {
         },
       });
     } catch (error) {
-      throw error;
+      const message = { status: 500, message: error }
+      console.log(error)
+      throw new RpcException(JSON.stringify(message));
     }
   }
 

@@ -9,3 +9,4 @@ export * from './lib/class.service';
 export * from './lib/seats.service';
 export * from './lib/token.service';
 export * from './lib/guards/auth.guard';
+export * from './lib/guards/roles.guard';

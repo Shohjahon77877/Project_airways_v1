@@ -18,6 +18,11 @@ export const FLIGHT_SERVICE_RABBITMQ = 'FLIGHT_SERVICE_RABBITMQ';
 export const NEWS_SERVICE_RABBITMQ = 'NEWS_SERVICE_RABBITMQ';
 export const DB_SERVICE_RABBITMQ = 'DB_SERVICE_RABBITMQ';
 export const AUTH_SERVICE_RABBITMQ = 'AUTH_SERVICE_RABBITMQ';
+export const TICKET_SERVICE_RABBITMQ = 'TICKET_SERVICE_RABBITMQ';
+export const LOYALTY_SERVICE_RABBITMQ = 'LOYALTY_SERVICE_RABBITMQ';
+export const USER_SERVICE_RABBITMQ = 'USER_SERVICE_RABBITMQ';
+export const REVIEWS_SERVICE_RABBITMQ = 'REVIEWS_SERVICE_RABBITMQ';
+
 
 @Global()
 @Module({
@@ -82,6 +87,42 @@ export const AUTH_SERVICE_RABBITMQ = 'AUTH_SERVICE_RABBITMQ';
           queueOptions: { durable: true },
         },
       },
+      {
+        name: TICKET_SERVICE_RABBITMQ,
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://admin:Pass123@localhost:5672'],
+          queue: 'ticket_queue',
+          queueOptions: { durable: true },
+        },
+      },
+      {
+        name: LOYALTY_SERVICE_RABBITMQ,
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://admin:Pass123@localhost:5672'],
+          queue: 'loyalty_queue',
+          queueOptions: { durable: true },
+        },
+      },
+      {
+        name: USER_SERVICE_RABBITMQ,
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://admin:Pass123@localhost:5672'],
+          queue: 'user_queue',
+          queueOptions: { durable: true },
+        },
+      },
+      {
+        name: REVIEWS_SERVICE_RABBITMQ,
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://admin:Pass123@localhost:5672'],
+          queue: 'reviews_queue',
+          queueOptions: { durable: true },
+        },
+      }
     ]),
   ],
   providers: [

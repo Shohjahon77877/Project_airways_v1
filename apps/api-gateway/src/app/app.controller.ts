@@ -32,8 +32,13 @@ import {
   CreateSeatDto,
   UpdateSeatDto,
   CreateUserDto,
+  UpdateUserDto,
+  UpdateLoyaltyProgramDto,
+  CreateLoyaltyProgramDto,
+  UpdateTicketDto,
+  CreateTicketDto,
 } from '@my-airways/shared-dto-v2';
-import { AuthGuard } from '@my-airways/shared-services-v2';
+import { AuthGuard, RoleGuard } from '@my-airways/shared-services-v2';
 
 @Controller()
 export class AppController {
@@ -54,49 +59,83 @@ export class AppController {
     return this.appService.registerUser(dto);
   }
 
-  @Post('refresh')
-  refresh(@Body('userId') userId: number) {
-    return this.appService.refreshToken(userId);
+  @Post('refresh/:id')
+  refresh(@Param('id') id: number) {
+    return this.appService.refreshToken(id);
   }
 
-  @Post('logout')
-  logout(@Body('userId') userId: number) {
-    return this.appService.logout(userId);
+  @Post('logout/:id')
+  logout(@Param('id') id: number) {
+    return this.appService.logout(id);
   }
 
-  // Admin
-  @Post('admins')
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles('super_admin')
+  // ====================================================
+  // ==================== ADMINS ========================
+  // ====================================================
+  @Post('admin')
+  @UseGuards(AuthGuard, RoleGuard)
   createAdmin(@Body() admin: CreateAdminDto) {
     return this.appService.createAdmin(admin);
   }
 
-  @Get('admins')
+  @Get('admin')
   @UseGuards(AuthGuard)
-  getAdmins(@Req() req) {
+  getAdmins() {
     return this.appService.getAdmins();
   }
 
-  @Get('admins/:id')
+  @Get('admin/:id')
+  @UseGuards(AuthGuard)
   getAdminById(@Param('id') id: string) {
     return this.appService.getAdminById(+id);
   }
 
-  @Patch('admins/:id')
+  @Patch('admin/:id')
+  @UseGuards(AuthGuard, RoleGuard)
   updateAdmin(@Param('id') id: string, @Body() data: UpdateAdminDto) {
     return this.appService.updateAdmin(+id, data);
   }
 
-  @Delete('admins/:id')
+  @Delete('admin/:id')
+  @UseGuards(AuthGuard, RoleGuard)
   deleteAdmin(@Param('id') id: string) {
     return this.appService.deleteAdmin(+id);
   }
 
-  //-------------------------------------------------------------
-  // Flight
+  // ====================================================
+  // ==================== USERS ========================
+  // ====================================================
+
+  @Post('user')
+  @UseGuards(AuthGuard)
+  createUser(@Body() user: CreateUserDto) {
+    return this.appService.createUser(user);
+  }
+
+  @Get('user')
+  @UseGuards(AuthGuard)
+  getUsers(@Req() req: Request) {
+    return this.appService.getUsers();
+  }
+
+  @Get('user/:id')
+  getUserById(@Param('id') id: string) {
+    return this.appService.getUserById(+id);
+  }
+
+  @Patch('user/:id')
+  updateUser(@Param('id') id: string, @Body() data: UpdateUserDto) {
+    return this.appService.updateUser(+id, data);
+  }
+
+  @Delete('user/:id')
+  deleteUser(@Param('id') id: string) {
+    return this.appService.deleteUser(+id);
+  }
+
+  //===========================================================================
+  //----FLight Service---------------------------------------------------------
   @Get('flight')
-  // @UseGuards(AuthGuard('jwt'))
   getFlights() {
     return this.appService.getFlights();
   }
@@ -106,27 +145,27 @@ export class AppController {
     return this.appService.getFlightById(+id);
   }
 
-  @Post('admins/flight')
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles('admin', 'super_admin')
+  @Post('flight')
+  @UseGuards(AuthGuard)
   createFlight(@Body() flight: CreateFlightDto) {
     return this.appService.createFlight(flight);
   }
 
-  @Patch('admins/flight/:id')
+  @Patch('flight/:id')
+  @UseGuards(AuthGuard)
   updateFlight(@Param('id') id: string, @Body() data: UpdateFlightDto) {
     return this.appService.updateFlight(+id, data);
   }
 
-  @Delete('admins/flight/:id')
+  @Delete('flight/:id')
+  @UseGuards(AuthGuard)
   deleteFlight(@Param('id') id: string) {
     return this.appService.deleteFlight(+id);
   }
 
-  //--------------------------------------------------------------
-  // News
+  //===========================================================================
+  //----News Service-----------------------------------------------------------
   @Get('news')
-  // @UseGuards(AuthGuard('jwt'))
   getNews() {
     return this.appService.getNews();
   }
@@ -136,26 +175,91 @@ export class AppController {
     return this.appService.getNewsById(+id);
   }
 
-  @Post('admins/news')
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles('admin', 'super_admin')
+  @Post('news')
+  @UseGuards(AuthGuard)
   createNews(@Body() news: CreateNewsDto) {
     return this.appService.createNews(news);
   }
 
-  @Patch('admins/news/:id')
+  @Patch('news/:id')
+  @UseGuards(AuthGuard)
   updateNews(@Param('id') id: string, @Body() data: UpdateNewsDto) {
     return this.appService.updateNews(+id, data);
   }
 
-  @Delete('admins/news/:id')
+  @Delete('news/:id')
+  @UseGuards(AuthGuard)
   deleteNews(@Param('id') id: string) {
     return this.appService.deleteNews(+id);
+  }
+
+  //===========================================================================
+  //----Ticket Service---------------------------------------------------------
+  @Post('ticket')
+  @UseGuards(AuthGuard, RoleGuard)
+  createTicket(@Body() ticket: CreateTicketDto) {
+    return this.appService.createTicket(ticket);
+  }
+
+  @Get('ticket')
+  @UseGuards(AuthGuard)
+  getTicket(@Req() req: Request) {
+    return this.appService.getTickets();
+  }
+
+  @Get('ticket/:id')
+  getTicketById(@Param('id') id: string) {
+    return this.appService.getTicketById(+id);
+  }
+
+  @Patch('ticket/:id')
+  @UseGuards(AuthGuard, RoleGuard)
+  updateTicket(@Param('id') id: string, @Body() data: UpdateTicketDto) {
+    return this.appService.updateTicket(+id, data);
+  }
+
+  @Delete('ticket/:id')
+  @UseGuards(AuthGuard, RoleGuard)
+  deleteTicket(@Param('id') id: string) {
+    return this.appService.deleteTicket(+id);
+  }
+
+  //===========================================================================
+  //----Loyalty program--------------------------------------------------------
+  @Get('loyalty')
+  getLoyaltyMembers() {
+    return this.appService.getMembers();
+  }
+
+  @Get('loyalty/:id')
+  getLoyaltyMemberById(@Param('memberId') id: string) {
+    return this.appService.getMemberById(+id);
+  }
+
+  @Post('loyalty')
+  createLoyaltyMember(@Body() data: CreateLoyaltyProgramDto) {
+    return this.appService.enrollMember(data);
+  }
+
+  @Patch('loyalty/:id')
+  @UseGuards(AuthGuard)
+  updateMemberPoints(
+    @Param('id') id: string,
+    @Body() data: UpdateLoyaltyProgramDto,
+  ) {
+    return this.appService.updatePoints(+id, data);
+  }
+
+  @Delete('loyalty/:id')
+  @UseGuards(AuthGuard)
+  deleteLoyaltyMember(@Param('id') id: string) {
+    return this.appService.deleteMember(+id);
   }
 
   // ==================ONLY---DB---QUERIES=========================
   // ---- Airports ------------------------------------------------
   @Post('airport')
+  @UseGuards(AuthGuard)
   createAirport(@Body() data: CreateAirportDto) {
     return this.appService.createAirport(data);
   }
@@ -171,17 +275,20 @@ export class AppController {
   }
 
   @Patch('airport/:id')
+  @UseGuards(AuthGuard)
   updateAirport(@Param('id') id: string, @Body() data: UpdateAirportDto) {
     return this.appService.updateAirport(Number(id), data);
   }
 
   @Delete('airport/:id')
+  @UseGuards(AuthGuard)
   deleteAirport(@Param('id') id: string) {
     return this.appService.deleteAirport(Number(id));
   }
 
   // ---- Cities ------------------------------------------------
   @Post('city')
+  @UseGuards(AuthGuard)
   createCity(@Body() data: CreateCityDto) {
     return this.appService.createCity(data);
   }
@@ -197,17 +304,20 @@ export class AppController {
   }
 
   @Patch('city/:id')
+  @UseGuards(AuthGuard)
   updateCity(@Param('id') id: string, @Body() data: UpdateCityDto) {
     return this.appService.updateCity(Number(id), data);
   }
 
   @Delete('city/:id')
+  @UseGuards(AuthGuard)
   deleteCity(@Param('id') id: string) {
     return this.appService.deleteCity(Number(id));
   }
 
   // ---- Countries ------------------------------------------------
   @Post('country')
+  @UseGuards(AuthGuard)
   createCountry(@Body() data: CreateCountryDto) {
     return this.appService.createCountry(data);
   }
@@ -223,17 +333,20 @@ export class AppController {
   }
 
   @Patch('country/:id')
+  @UseGuards(AuthGuard)
   updateCountry(@Param('id') id: string, @Body() data: UpdateCountryDto) {
     return this.appService.updateCountry(Number(id), data);
   }
 
   @Delete('country/:id')
+  @UseGuards(AuthGuard)
   deleteCountry(@Param('id') id: string) {
     return this.appService.deleteCountry(Number(id));
   }
 
   // ---- Companies ------------------------------------------------
   @Post('company')
+  @UseGuards(AuthGuard)
   createCompany(@Body() data: CreateCompanyDto) {
     return this.appService.createCompany(data);
   }
@@ -249,17 +362,20 @@ export class AppController {
   }
 
   @Patch('company/:id')
+  @UseGuards(AuthGuard)
   updateCompany(@Param('id') id: string, @Body() data: UpdateCompanyDto) {
     return this.appService.updateCompany(Number(id), data);
   }
 
   @Delete('company/:id')
+  @UseGuards(AuthGuard)
   deleteCompany(@Param('id') id: string) {
     return this.appService.deleteCompany(Number(id));
   }
 
   // ---- Planes ------------------------------------------------
   @Post('planes')
+  // @UseGuards(AuthGuard)
   createPlane(@Body() data: CreatePlaneDto) {
     return this.appService.createPlane(data);
   }
@@ -275,17 +391,20 @@ export class AppController {
   }
 
   @Patch('planes/:id')
+  @UseGuards(AuthGuard)
   updatePlane(@Param('id') id: string, @Body() data: UpdatePlaneDto) {
     return this.appService.updatePlane(Number(id), data);
   }
 
   @Delete('planes/:id')
+  @UseGuards(AuthGuard)
   deletePlane(@Param('id') id: string) {
     return this.appService.deletePlane(Number(id));
   }
 
   // ---- Classes ------------------------------------------------
   @Post('class')
+  @UseGuards(AuthGuard)
   createClass(@Body() data: CreateClassDto) {
     return this.appService.createClass(data);
   }
@@ -301,19 +420,26 @@ export class AppController {
   }
 
   @Patch('class/:id')
+  @UseGuards(AuthGuard)
   updateClass(@Param('id') id: string, @Body() data: UpdateClassDto) {
     return this.appService.updateClass(Number(id), data);
   }
 
   @Delete('class/:id')
+  @UseGuards(AuthGuard)
   deleteClass(@Param('id') id: string) {
     return this.appService.deleteClass(Number(id));
   }
 
   // ---- Seats ------------------------------------------------
   @Post('seat')
+  // @UseGuards(AuthGuard)
   createSeat(@Body() data: CreateSeatDto) {
-    return this.appService.createSeat(data);
+    try {
+      return this.appService.createSeat(data);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get('seat')
@@ -327,11 +453,13 @@ export class AppController {
   }
 
   @Patch('seat/:id')
+  @UseGuards(AuthGuard)
   updateSeat(@Param('id') id: string, @Body() data: UpdateSeatDto) {
     return this.appService.updateSeat(Number(id), data);
   }
 
   @Delete('seat/:id')
+  // @UseGuards(AuthGuard)
   deleteSeat(@Param('id') id: string) {
     return this.appService.deleteSeat(Number(id));
   }

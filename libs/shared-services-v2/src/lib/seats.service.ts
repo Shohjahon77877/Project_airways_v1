@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+} from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { PrismaService } from '@my-airways/shared-services-v2';
 import { CreateSeatDto, UpdateSeatDto } from '@my-airways/shared-dto-v2';
-import { Extra_Detail } from '../../../../generated/prisma';
 
 @Injectable()
 export class SeatsService {
@@ -11,16 +14,26 @@ export class SeatsService {
   async create(data: CreateSeatDto) {
     try {
       const { plane_id, class_id } = data;
-
       const plane = await this.prisma.planes.findUnique({
         where: { id: plane_id },
       });
       if (!plane) throw new RpcException('Plane not found');
 
+      const totalAssignedSeatsForPlane = await this.prisma.seats.count({
+        where: { plane_id },
+      });
+      if (totalAssignedSeatsForPlane >= plane.total_seats) {
+        const message = { status: 400, message: 'Seats for plane exceeded' }
+        throw new RpcException(JSON.stringify(message));
+      }
+
       const cls = await this.prisma.classes.findUnique({
         where: { id: class_id },
       });
-      if (!cls) throw new RpcException('Class not found');
+      if (!cls) {
+        const message = { status: 404, message: 'Class not found'}
+        throw new RpcException(JSON.stringify(message));
+      };
 
       return await this.prisma.seats.create({ data });
     } catch (error: any) {
@@ -38,7 +51,7 @@ export class SeatsService {
         },
       });
     } catch (error: any) {
-      throw new RpcException(error.message);
+      throw new RpcException(error);
     }
   }
 
@@ -52,7 +65,10 @@ export class SeatsService {
           Ticket: true,
         },
       });
-      if (!seat) throw new RpcException('Seat not found');
+      if (!seat) {
+        const message = { status: 404, message: 'Seat not found' }
+        throw new RpcException(JSON.stringify(message));
+      }
       return seat;
     } catch (error: any) {
       throw new RpcException(error.message);
@@ -62,7 +78,6 @@ export class SeatsService {
   async update(id: number, data: UpdateSeatDto) {
     try {
       await this.getById(id);
-
       if (data.plane_id) {
         const plane = await this.prisma.planes.findUnique({
           where: { id: data.plane_id },

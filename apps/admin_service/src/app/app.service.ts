@@ -15,8 +15,7 @@ export class AppService {
       return await this.prisma.admin.create({
         data: {
           ...data,
-          password: hashedPassword,
-          last_login: new Date(),
+          password: hashedPassword
         },
       });
     } catch (error) {

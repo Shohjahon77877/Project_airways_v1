@@ -41,15 +41,20 @@ enum Flight_Status {
   LANDED
 }
 
+enum Roles {
+  SUPER_ADMIN
+  ADMIN
+}
+
 model Admin {
-  id             Int      @id @default(autoincrement())
-  first_name     String
-  last_name      String
-  email          String   @unique
-  password       String
-  is_super_admin Boolean?
-  created_by     Int?
-  last_login     DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String   @unique
+  password   String
+  role       Roles    @default(ADMIN)
+  created_by Int?
+  last_login DateTime @default(now())
 
   News News[]
 }
@@ -96,7 +101,7 @@ model Ticket {
   seat          Seats         @relation(fields: [seat_id], references: [id])
   is_round_trip Boolean
   purchase_date DateTime      @default(now())
-  price         Decimal
+  price         Decimal       @db.Decimal(10, 2)
   ticket_status Ticket_status
 
   @@unique([flight_id, seat_id])
@@ -104,10 +109,10 @@ model Ticket {
 
 model LoyaltyProgram {
   id      Int                 @id @default(autoincrement())
-  user_id Int
+  user_id Int                 @unique
   user    Users               @relation(fields: [user_id], references: [id])
-  points  Int
-  level   Loyalt_Program_Rank
+  points  Int                 @default(0)
+  level   Loyalt_Program_Rank @default(BRONZE)
 }
 
 model Reviews {

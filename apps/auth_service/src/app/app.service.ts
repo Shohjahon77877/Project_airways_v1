@@ -49,12 +49,8 @@ export class AppService {
       throw new NotFoundException(`Email or password is incorrect`);
     }
 
-    const { id, is_super_admin } = userlogin;
-    const tokens = await this.tokenService.generateTokens(
-      id,
-      email,
-      is_super_admin,
-    );
+    const { id, role } = userlogin;
+    const tokens = await this.tokenService.generateTokens(id, email, role);
     const { password: _, ...result } = userlogin;
     return { user: result, tokens };
   }

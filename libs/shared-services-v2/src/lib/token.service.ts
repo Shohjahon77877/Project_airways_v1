@@ -27,9 +27,15 @@ export class TokenService {
   ) {
     const redisUrl =
       this.config.get<string>('REDIS_URL') ?? 'redis://localhost:6379';
-    this.jwtAccessSecret = this.config.get<string>('JWT_ACCESS_TOKEN_SECRET') ?? 'supersecret';
-    this.jwtRefreshSecret = this.config.get<string>('JWT_REFRESH_TOKEN_SECRET') ?? 'supersecretrefresh';
-    this.accessExpiryMinutes = parseInt( this.config.get<string>('JWT_ACCESS_TOKEN_EXPIRY_MINUTES') ?? '30', 10, );
+    this.jwtAccessSecret =
+      this.config.get<string>('JWT_ACCESS_TOKEN_SECRET') ?? 'supersecret';
+    this.jwtRefreshSecret =
+      this.config.get<string>('JWT_REFRESH_TOKEN_SECRET') ??
+      'supersecretrefresh';
+    this.accessExpiryMinutes = parseInt(
+      this.config.get<string>('JWT_ACCESS_TOKEN_EXPIRY_MINUTES') ?? '30',
+      10,
+    );
     this.refreshExpiryDays = parseInt(
       this.config.get<string>('JWT_REFRESH_TOKEN_EXPIRY_DAYS') ?? '7',
       10,
@@ -114,10 +120,10 @@ export class TokenService {
 
       let newPayload: JwtPayload;
 
-      if (payload.role === 'admin' || payload.role === 'super_admin') {
+      if (payload.role === 'ADMIN' || payload.role === 'SUPER_ADMIN') {
         const admin = await this.prisma.admin.findUnique({
           where: { id: userId },
-          select: { id: true, email: true, is_super_admin: true },
+          select: { id: true, email: true, role: true },
         });
 
         if (!admin) throw new RpcException('Admin not found');
@@ -125,7 +131,7 @@ export class TokenService {
         newPayload = {
           sub: admin.id,
           email: admin.email,
-          role: admin.is_super_admin ? 'super_admin' : 'admin',
+          role: admin.role ? 'SUPER_ADMIN' : 'ADMIN',
           type: 'access',
         };
       } else {
@@ -156,7 +162,7 @@ export class TokenService {
         this.accessExpiryMinutes * 60,
       );
 
-      return newAccessToken;
+      return { Token: newAccessToken };
     } catch (err: any) {
       throw new RpcException(err.message);
     }

@@ -7,8 +7,10 @@ import {
   IsBoolean,
   IsInt,
   IsDate,
+  IsEnum,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { Roles } from '../../../../generated/prisma';
 
 export class CreateAdminDto {
   @IsString()
@@ -40,9 +42,9 @@ export class CreateAdminDto {
   )
   password!: string;
 
-  @IsBoolean()
+  @IsEnum(Roles)
   @IsOptional()
-  is_super_admin?: boolean;
+  roles?: Roles;
 
   @IsInt()
   @IsOptional()

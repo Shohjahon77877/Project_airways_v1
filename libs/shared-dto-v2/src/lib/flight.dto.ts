@@ -1,5 +1,6 @@
 import {
   IsDate,
+  IsDecimal,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -19,7 +20,7 @@ export class CreateFlightDto {
   @IsInt()
   @IsNotEmpty()
   plane_id!: number;
-  
+
   @IsInt()
   @IsNotEmpty()
   arrival_airport_id!: number;
@@ -27,6 +28,10 @@ export class CreateFlightDto {
   @IsInt()
   @IsNotEmpty()
   departure_airport_id!: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  price!: number
 
   @IsDate()
   @Type(() => Date)

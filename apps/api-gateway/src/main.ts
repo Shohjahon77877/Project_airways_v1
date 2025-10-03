@@ -24,10 +24,8 @@ async function bootstrap() {
         });
       },
     }),
-    
   );
 
-  // app.useGlobalFilters(new GatewayExceptionFilter(), new RpcExceptionFilter);
   await app.listen(port);
   Logger.log(
     `🌐 Gateway is running on: http://localhost:${port}/${globalPrefix}`,

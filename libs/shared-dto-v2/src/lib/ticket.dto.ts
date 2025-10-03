@@ -36,7 +36,7 @@ export class CreateTicketDto {
   purchase_date?: string;
 
   @IsDecimal()
-  @IsNotEmpty()
+  @IsOptional()
   price!: number;
 
   @IsEnum(Ticket_status)

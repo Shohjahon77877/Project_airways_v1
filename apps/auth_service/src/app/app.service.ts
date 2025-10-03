@@ -51,6 +51,7 @@ export class AppService {
 
     const { id, role } = userlogin;
     const tokens = await this.tokenService.generateTokens(id, email, role);
+    console.log(tokens)
     const { password: _, ...result } = userlogin;
     return { user: result, tokens };
   }

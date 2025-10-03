@@ -10,16 +10,22 @@ export class FlightService {
   async createFlight(data: CreateFlightDto) {
     const [plane, departureAirport, arrivalAirport] = await Promise.all([
       this.prisma.planes.findUnique({ where: { id: data.plane_id } }),
-      this.prisma.airports.findUnique({ where: { id: data.departure_airport_id } }),
-      this.prisma.airports.findUnique({ where: { id: data.arrival_airport_id } }),
+      this.prisma.airports.findUnique({
+        where: { id: data.departure_airport_id },
+      }),
+      this.prisma.airports.findUnique({
+        where: { id: data.arrival_airport_id },
+      }),
     ]);
 
     if (!plane) return errorResponse(404, 'Plane not found');
-    if (!departureAirport) return errorResponse(404, 'Departure airport not found');
+    if (!departureAirport)
+      return errorResponse(404, 'Departure airport not found');
     if (!arrivalAirport) return errorResponse(404, 'Arrival airport not found');
 
     const prismaData = {
       flight_number: data.flight_number,
+      price: data.price,
       plane_id: data.plane_id,
       departure_airport_id: data.departure_airport_id,
       arrival_airport_id: data.arrival_airport_id,
@@ -62,13 +68,24 @@ export class FlightService {
     if (!existing) return errorResponse(404, 'Flight not found');
 
     const [plane, departureAirport, arrivalAirport] = await Promise.all([
-      data.plane_id ? this.prisma.planes.findUnique({ where: { id: data.plane_id } }) : null,
-      data.departure_airport_id ? this.prisma.airports.findUnique({ where: { id: data.departure_airport_id } }): null,
-      data.arrival_airport_id ? this.prisma.airports.findUnique({ where: { id: data.arrival_airport_id } }): null,
+      data.plane_id
+        ? this.prisma.planes.findUnique({ where: { id: data.plane_id } })
+        : null,
+      data.departure_airport_id
+        ? this.prisma.airports.findUnique({
+            where: { id: data.departure_airport_id },
+          })
+        : null,
+      data.arrival_airport_id
+        ? this.prisma.airports.findUnique({
+            where: { id: data.arrival_airport_id },
+          })
+        : null,
     ]);
 
     if (!plane) return errorResponse(404, 'Plane not found');
-    if (!departureAirport) return errorResponse(404, 'Departure airport not found');
+    if (!departureAirport)
+      return errorResponse(404, 'Departure airport not found');
     if (!arrivalAirport) return errorResponse(404, 'Arrival airport not found');
 
     return await this.prisma.flights.update({

@@ -104,7 +104,7 @@ model Ticket {
   price         Decimal       @db.Decimal(10, 2)
   ticket_status Ticket_status
 
-  @@unique([flight_id, seat_id])
+  @@unique([seat_id])
 }
 
 model LoyaltyProgram {
@@ -170,6 +170,7 @@ model Airports {
 model Flights {
   id                   Int           @id @default(autoincrement())
   flight_number        Int
+  price                Decimal?      @db.Decimal(10, 2)
   plane_id             Int
   arrival_airport_id   Int
   departure_airport_id Int

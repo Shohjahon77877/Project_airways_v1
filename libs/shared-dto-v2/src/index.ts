@@ -12,3 +12,4 @@ export * from './lib/seats.dto';
 export * from './lib/user.dto';
 export * from './lib/loyalty_program.dto';
 export * from './lib/ticket.dto';
+export * from './lib/review.dto';

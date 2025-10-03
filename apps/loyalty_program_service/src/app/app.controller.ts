@@ -12,7 +12,7 @@ export class AppController {
 
   @MessagePattern({ cmd: 'create_loyalty_member' })
   createLoyaltyMember(@Payload() data: CreateLoyaltyProgramDto) {
-    console.log(data)
+    console.log(data);
     return this.appService.createLoyaltyMember(data);
   }
 

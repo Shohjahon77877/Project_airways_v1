@@ -23,7 +23,6 @@ export const LOYALTY_SERVICE_RABBITMQ = 'LOYALTY_SERVICE_RABBITMQ';
 export const USER_SERVICE_RABBITMQ = 'USER_SERVICE_RABBITMQ';
 export const REVIEWS_SERVICE_RABBITMQ = 'REVIEWS_SERVICE_RABBITMQ';
 
-
 @Global()
 @Module({
   imports: [
@@ -122,7 +121,7 @@ export const REVIEWS_SERVICE_RABBITMQ = 'REVIEWS_SERVICE_RABBITMQ';
           queue: 'reviews_queue',
           queueOptions: { durable: true },
         },
-      }
+      },
     ]),
   ],
   providers: [

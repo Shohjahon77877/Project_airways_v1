@@ -1,4 +1,8 @@
-import { CreateAdminDto, CreateUserDto, UpdateUserDto } from '@my-airways/shared-dto-v2';
+import {
+  CreateAdminDto,
+  CreateUserDto,
+  UpdateUserDto,
+} from '@my-airways/shared-dto-v2';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@my-airways/shared-services-v2';
 import { PasswordUtil, errorResponse } from '@my-airways/shared-utils';
@@ -6,7 +10,7 @@ import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createUser(data: CreateUserDto) {
     try {
@@ -23,7 +27,7 @@ export class UserService {
         },
       });
     } catch (error) {
-      throw error;
+      throw errorResponse(500, error);
     }
   }
 
@@ -31,11 +35,11 @@ export class UserService {
     try {
       const user = await this.prisma.users.findUnique({ where: { id } });
       if (!user) {
-        throw errorResponse(404, `User by id: ${id} not found`)
+        throw errorResponse(404, `User by id: ${id} not found`);
       }
       return user;
     } catch (error) {
-      throw error;
+      throw errorResponse(500, error);
     }
   }
 
@@ -43,7 +47,7 @@ export class UserService {
     try {
       return await this.prisma.users.findMany();
     } catch (error) {
-      throw error;
+      throw errorResponse(500, error);
     }
   }
 
@@ -59,15 +63,15 @@ export class UserService {
 
       return await this.prisma.users.update({ where: { id }, data });
     } catch (error) {
-      throw new RpcException(JSON.stringify(error));
+      throw errorResponse(500, error);
     }
   }
-  
+
   async removeUser(id: number) {
     try {
       const deletedUser = await this.prisma.users.delete({ where: { id } });
       if (!deletedUser) {
-        throw errorResponse(404, `User by id: ${id} not found`)
+        throw errorResponse(404, `User by id: ${id} not found`);
       }
       return deletedUser;
     } catch (error) {

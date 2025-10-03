@@ -11,19 +11,19 @@ export class AppService {
   async createAdmin(data: CreateAdminDto) {
     try {
       const { password } = data;
-      
+
       const hashedPassword = await PasswordUtil.hashPassword(password);
 
-      console.log(data)
+      console.log(data);
       return await this.prisma.admin.create({
         data: {
           ...data,
-          password: hashedPassword
+          password: hashedPassword,
         },
       });
     } catch (error) {
-      const message = { status: 500, message: error }
-      console.log(error)
+      const message = { status: 500, message: error };
+      console.log(error);
       throw new RpcException(JSON.stringify(message));
     }
   }

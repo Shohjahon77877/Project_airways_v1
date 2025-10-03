@@ -17,6 +17,7 @@ async function bootstrap() {
       },
     },
   );
+  
   await app.listen();
   Logger.log(`✈️ Ticket service is listening to RMQ...`);
 }

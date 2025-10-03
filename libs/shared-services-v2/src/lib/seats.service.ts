@@ -23,7 +23,7 @@ export class SeatsService {
         where: { plane_id },
       });
       if (totalAssignedSeatsForPlane >= plane.total_seats) {
-        const message = { status: 400, message: 'Seats for plane exceeded' }
+        const message = { status: 400, message: 'Seats for plane exceeded' };
         throw new RpcException(JSON.stringify(message));
       }
 
@@ -31,9 +31,9 @@ export class SeatsService {
         where: { id: class_id },
       });
       if (!cls) {
-        const message = { status: 404, message: 'Class not found'}
+        const message = { status: 404, message: 'Class not found' };
         throw new RpcException(JSON.stringify(message));
-      };
+      }
 
       return await this.prisma.seats.create({ data });
     } catch (error: any) {
@@ -66,7 +66,7 @@ export class SeatsService {
         },
       });
       if (!seat) {
-        const message = { status: 404, message: 'Seat not found' }
+        const message = { status: 404, message: 'Seat not found' };
         throw new RpcException(JSON.stringify(message));
       }
       return seat;

@@ -17,6 +17,7 @@ async function bootstrap() {
       },
     },
   );
+
   await app.listen();
   Logger.log(`=== User service is listening to RMQ...`);
 }

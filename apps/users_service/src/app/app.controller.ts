@@ -5,8 +5,8 @@ import { CreateUserDto, UpdateUserDto } from '@my-airways/shared-dto-v2';
 
 @Controller()
 export class UserController {
-  constructor(private readonly userService: UserService) { }
-  
+  constructor(private readonly userService: UserService) {}
+
   @MessagePattern({ cmd: 'create_user' })
   createUser(@Payload() dto: CreateUserDto) {
     return this.userService.createUser(dto);

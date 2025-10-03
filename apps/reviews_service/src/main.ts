@@ -17,9 +17,9 @@ async function bootstrap() {
       },
     },
   );
-  Logger.log(
-    `🚀 Reviews service is listening to RMQ }`,
-  );
+
+  await app.listen();
+  Logger.log(`🚀 Reviews service is listening to RMQ }`);
 }
 
 bootstrap();

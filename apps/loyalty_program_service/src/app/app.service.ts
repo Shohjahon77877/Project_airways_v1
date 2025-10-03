@@ -21,7 +21,9 @@ export class AppService {
   }
 
   async getLoyaltyMembers() {
-    return await this.prisma.loyaltyProgram.findMany({ include: { user: true } });
+    return await this.prisma.loyaltyProgram.findMany({
+      include: { user: true },
+    });
   }
 
   async getLoyaltyMemberById(id: number) {

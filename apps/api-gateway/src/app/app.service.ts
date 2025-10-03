@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { RmqErrorHandler} from '@my-airways/shared-utils';
+import { RmqErrorHandler } from '@my-airways/shared-utils';
 import {
   ADMIN_SERVICE_RABBITMQ,
   USER_SERVICE_RABBITMQ,
@@ -17,6 +17,7 @@ import {
   AUTH_SERVICE_RABBITMQ,
   TICKET_SERVICE_RABBITMQ,
   LOYALTY_SERVICE_RABBITMQ,
+  REVIEWS_SERVICE_RABBITMQ
 } from '@my-airways/shared-services-v2';
 import {
   CreateAdminDto,
@@ -45,19 +46,26 @@ import {
   UpdateLoyaltyProgramDto,
   CreateTicketDto,
   UpdateTicketDto,
+  CreateReviewDto,
+  UpdateReviewDto,
 } from '@my-airways/shared-dto-v2';
 
 @Injectable()
 export class AppService {
   constructor(
-    @Inject(ADMIN_SERVICE_RABBITMQ) private readonly adminRMQClient: ClientProxy,
+    @Inject(ADMIN_SERVICE_RABBITMQ)
+    private readonly adminRMQClient: ClientProxy,
     @Inject(USER_SERVICE_RABBITMQ) private readonly userRMQClient: ClientProxy,
-    @Inject(FLIGHT_SERVICE_RABBITMQ) private readonly flightRMQClient: ClientProxy,
+    @Inject(FLIGHT_SERVICE_RABBITMQ)
+    private readonly flightRMQClient: ClientProxy,
     @Inject(NEWS_SERVICE_RABBITMQ) private readonly newsRMQClient: ClientProxy,
     @Inject(DB_SERVICE_RABBITMQ) private readonly dbRMQClient: ClientProxy,
     @Inject(AUTH_SERVICE_RABBITMQ) private readonly authRMQClient: ClientProxy,
-    @Inject(LOYALTY_SERVICE_RABBITMQ) private readonly loyaltyRMQClient: ClientProxy,
+    @Inject(LOYALTY_SERVICE_RABBITMQ)
+    private readonly loyaltyRMQClient: ClientProxy,
     @Inject(TICKET_SERVICE_RABBITMQ) private readonly ticketRMQClient: ClientProxy,
+    @Inject(REVIEWS_SERVICE_RABBITMQ) private readonly reviewsRMQClient: ClientProxy,
+
   ) {}
 
   // ====================================================
@@ -307,25 +315,18 @@ export class AppService {
 
   @RmqErrorHandler()
   async enrollMember(data: CreateLoyaltyProgramDto) {
-    console.log("This part is running")
-    // return await firstValueFrom(
-    //   this.loyaltyRMQClient.send({ cmd: 'create_loyalty_member' }, data),
-    // );
-    try {
-    const res = firstValueFrom(
+    return await firstValueFrom(
       this.loyaltyRMQClient.send({ cmd: 'create_loyalty_member' }, data)
-    );
-    return res;
-  } catch (err) {
-    console.error('❌ Error while sending RMQ message:', err);
-    throw new HttpException('Failed to enroll member.', HttpStatus.BAD_GATEWAY);
-  }
+    )
   }
 
   @RmqErrorHandler()
   async updatePoints(id: number, data: UpdateLoyaltyProgramDto) {
     return await firstValueFrom(
-      this.loyaltyRMQClient.send({ cmd: 'update_loyalty_points' }, { id, ...data }),
+      this.loyaltyRMQClient.send(
+        { cmd: 'update_loyalty_points' },
+        { id, ...data },
+      ),
     );
   }
 
@@ -337,9 +338,50 @@ export class AppService {
   }
 
   // ====================================================
-  // ==================== DB QUERIES ====================
+  // ================== REVIEWS =========================
   // ====================================================
 
+  @RmqErrorHandler()
+  async getReviews() {
+    return await firstValueFrom(
+      this.reviewsRMQClient.send({ cmd: 'get_reviews' }, {}),
+    );
+  }
+
+  @RmqErrorHandler()
+  async getReviewById(id: number) {
+    return await firstValueFrom(
+      this.reviewsRMQClient.send({ cmd: 'get_review_by_id' }, id),
+    );
+  }
+
+  @RmqErrorHandler()
+  async createReview(data: CreateReviewDto) {
+    return await firstValueFrom(
+      this.reviewsRMQClient.send({ cmd: 'create_review' }, data)
+    )
+  }
+
+  @RmqErrorHandler()
+  async updateReview(id: number, data: UpdateReviewDto) {
+    return await firstValueFrom(
+      this.reviewsRMQClient.send(
+        { cmd: 'update_review' },
+        { id, ...data },
+      ),
+    );
+  }
+
+  @RmqErrorHandler()
+  async deleteReview(id: number) {
+    return await firstValueFrom(
+      this.reviewsRMQClient.send({ cmd: 'delete_review' }, id),
+    );
+  }
+
+  // ====================================================
+  // ==================== DB QUERIES ====================
+  // ====================================================
 
   // ====================================================
   // ==================== Aiport ========================
@@ -379,23 +421,28 @@ export class AppService {
     );
   }
 
-
   // ====================================================
   // ==================== CITY ==========================
   // ====================================================
   @RmqErrorHandler()
   async createCity(data: CreateCityDto) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'create_city' }, data));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'create_city' }, data),
+    );
   }
 
   @RmqErrorHandler()
   async getCityById(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_city_by_id' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_city_by_id' }, id),
+    );
   }
 
   @RmqErrorHandler()
   async getCities() {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_cities' }, {}));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_cities' }, {}),
+    );
   }
 
   @RmqErrorHandler()
@@ -407,7 +454,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async deleteCity(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'delete_city' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'delete_city' }, id),
+    );
   }
 
   // ====================================================
@@ -430,7 +479,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async getCountries() {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_countries' }, {}));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_countries' }, {}),
+    );
   }
 
   @RmqErrorHandler()
@@ -442,7 +493,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async deleteCountry(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'delete_country' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'delete_country' }, id),
+    );
   }
 
   // ====================================================
@@ -465,7 +518,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async getCompanies() {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_companies' }, {}));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_companies' }, {}),
+    );
   }
 
   @RmqErrorHandler()
@@ -477,7 +532,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async deleteCompany(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'delete_company' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'delete_company' }, id),
+    );
   }
 
   // ====================================================
@@ -486,7 +543,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async createPlane(data: CreatePlaneDto) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'create_plane' }, data));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'create_plane' }, data),
+    );
   }
 
   @RmqErrorHandler()
@@ -498,7 +557,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async getPlanes() {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_planes' }, {}));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_planes' }, {}),
+    );
   }
 
   @RmqErrorHandler()
@@ -510,7 +571,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async deletePlane(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'delete_plane' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'delete_plane' }, id),
+    );
   }
 
   // ====================================================
@@ -519,7 +582,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async createClass(data: CreateClassDto) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'create_class' }, data));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'create_class' }, data),
+    );
   }
 
   @RmqErrorHandler()
@@ -531,7 +596,9 @@ export class AppService {
 
   @RmqErrorHandler()
   async getClasses() {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_classes' }, {}));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_classes' }, {}),
+    );
   }
 
   @RmqErrorHandler()
@@ -543,26 +610,34 @@ export class AppService {
 
   @RmqErrorHandler()
   async deleteClass(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'delete_class' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'delete_class' }, id),
+    );
   }
 
   // ====================================================
   // ==================== SEATS =========================
   // ====================================================
-  
+
   @RmqErrorHandler()
   async createSeat(data: CreateSeatDto) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'create_seat' }, data));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'create_seat' }, data),
+    );
   }
 
   @RmqErrorHandler()
   async getSeatById(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_seat_by_id' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_seat_by_id' }, id),
+    );
   }
-  
+
   @RmqErrorHandler()
   async getSeats() {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'get_seats' }, {}));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'get_seats' }, {}),
+    );
   }
 
   @RmqErrorHandler()
@@ -574,6 +649,8 @@ export class AppService {
 
   @RmqErrorHandler()
   async deleteSeat(id: number) {
-    return await firstValueFrom(this.dbRMQClient.send({ cmd: 'delete_seat' }, id));
+    return await firstValueFrom(
+      this.dbRMQClient.send({ cmd: 'delete_seat' }, id),
+    );
   }
 }

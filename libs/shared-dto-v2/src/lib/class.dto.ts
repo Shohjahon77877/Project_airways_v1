@@ -6,7 +6,7 @@ export class CreateClassDto {
   @IsNotEmpty()
   class_name!: string;
 
-  @IsNumber()
+  @IsDecimal()
   @IsNotEmpty()
   base_price!: number;
 }

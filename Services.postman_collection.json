@@ -1,0 +1,283 @@
+{
+	"info": {
+		"_postman_id": "d58326d0-cea1-427e-a8b6-99c8df8702f3",
+		"name": "Services",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44923400",
+		"_collection_link": "https://shohjahontoshboyev.postman.co/workspace/Shohjahon-Toshboyev's-Workspace~3071911d-cad7-4f5e-8695-ff4f790e52a5/collection/44923400-d58326d0-cea1-427e-a8b6-99c8df8702f3?action=share&source=collection_link&creator=44923400"
+	},
+	"item": [
+		{
+			"name": "localhost:3000/api/v1/login/admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"shohjahon.toshboyev@example.com\",\r\n    \"password\": \"Str0ngP@ssword!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/login/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"login",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/v1/admin",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"first_name\": \"John\",\r\n  \"last_name\": \"Doe\",\r\n  \"email\": \"shohjahon.toshboyev@example.com\",\r\n  \"password\": \"Str0ngP@ssword!\",\r\n  \"role\": \"SUPER_ADMIN\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/v1/flight",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE5LCJlbWFpbCI6InNob2hqYWhvbi50b3NoYm95ZXZAZXhhbXBsZS5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU5NTE0NDI3LCJleHAiOjE3NTk1MTYyMjd9.X9TS1N_eKVSzaGcvMqT9geFWNdfDmkcQHsq1xrEz0wA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"flight_number\": 12345,\r\n  \"plane_id\": 2,\r\n  \"departure_airport_id\": 2,\r\n  \"arrival_airport_id\": 5,\r\n  \"departure_time\": \"2025-10-05T08:20:00.000Z\",\r\n  \"arrival_time\": \"2025-10-05T12:45:00.000Z\",\r\n  \"status\": \"SCHEDULED\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/flight",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"flight"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/v1/user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE5LCJlbWFpbCI6InNob2hqYWhvbi50b3NoYm95ZXZAZXhhbXBsZS5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU5NTE0NDI3LCJleHAiOjE3NTk1MTYyMjd9.X9TS1N_eKVSzaGcvMqT9geFWNdfDmkcQHsq1xrEz0wA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"John\",\r\n    \"last_name\": \"Doe\",\r\n    \"email\": \"john.doe2@example.com\",\r\n    \"password\": \"Str0ngP@ssword!\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/v1/login/user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"john.doe2@example.com\",\r\n    \"password\": \"Str0ngP@ssword!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/login/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"login",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/v1/ticket",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE5LCJlbWFpbCI6InNob2hqYWhvbi50b3NoYm95ZXZAZXhhbXBsZS5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU5NTI3MzMwLCJleHAiOjE3NTk1MjkxMzB9.RzzpDyAJM9rCKJpa_eGpf8EdRSeGzyGgZWggGyp8sWM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user_id\": 1,\r\n  \"flight_id\": 7,\r\n  \"seat_id\": 5,\r\n  \"is_round_trip\": false,\r\n  \"ticket_status\": \"PURCHASED\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/ticket",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"ticket"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:3000/api/v1/loyalty",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE5LCJlbWFpbCI6InNob2hqYWhvbi50b3NoYm95ZXZAZXhhbXBsZS5jb20iLCJyb2xlIjoiU1VQRVJfQURNSU4iLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzU5NTI3MzMwLCJleHAiOjE3NTk1MjkxMzB9.RzzpDyAJM9rCKJpa_eGpf8EdRSeGzyGgZWggGyp8sWM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user_id\": 1,\r\n  \"flight_id\": 7,\r\n  \"seat_id\": 5,\r\n  \"is_round_trip\": false,\r\n  \"ticket_status\": \"PURCHASED\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "localhost:3000/api/v1/loyalty",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"loyalty"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
